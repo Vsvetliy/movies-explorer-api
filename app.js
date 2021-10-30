@@ -1,16 +1,16 @@
 // const dotenv = require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-// const { celebrate, Joi, errors } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 // const cors = require('cors');
 const validator = require('./node_modules/validator');
-// const usersRout = require('./routes/users');
-// const usersControl = require('./controllers/users');
-// const cardsRout = require('./routes/cards');
+const usersRout = require('./routes/users');
+const usersControl = require('./controllers/users');
+const moviesRout = require('./routes/movies');
 // const auth = require('./middlewares/auth');
-// const error = require('./middlewares/error');
+const error = require('./middlewares/error');
 // const NotFoundError = require('./errors/not-found-err');
-// const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const validateURL = (value) => {
   if (!validator.isURL(value, { require_protocol: true })) {
@@ -37,7 +37,7 @@ console.log(process.env.NODE_ENV);
 
 const app = express();
 // // app.use(cors());
-// app.use(express.json());
+app.use(express.json());
 // // логгер запросов
 // app.use(requestLogger);
 
@@ -66,35 +66,35 @@ const app = express();
 //   next();
 // });
 
-// app.post('/signin', celebrate({
-//   body: Joi.object().keys({
-//     email: Joi.string().required().min(2).max(30),
-//     password: Joi.string().required().min(2),
-//   }),
-// }), usersControl.usersLogin);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().min(2).max(30),
+    password: Joi.string().required().min(2),
+  }),
+}), usersControl.usersLogin);
 
-// app.post('/signup', celebrate({
-//   body: Joi.object().keys({
-//     name: Joi.string().min(2).max(30),
-//     about: Joi.string().min(2).max(30),
-//     avatar: Joi.string().custom(validateURL),
-//     email: Joi.string().required().min(2).max(30),
-//     password: Joi.string().required().min(2),
-//   }),
-// }), usersControl.usersPost);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().custom(validateURL),
+    email: Joi.string().required().min(2).max(30),
+    password: Joi.string().required().min(2),
+  }),
+}), usersControl.usersPost);
 
 // app.use(auth);
 // app.use('/users', usersRout);
 
-// app.use('/cards', cardsRout);
+app.use('/movies', moviesRout);
 
-// app.use('/*', (req, res) => {
-//   throw new NotFoundError('Cтраница не найдена');
-// });
-// //  логгер ошибок
-// app.use(errorLogger);
-// app.use(errors());
-// app.use(error);
+app.use('/*', (req, res) => {
+  throw new NotFoundError('Cтраница не найдена');
+});
+//  логгер ошибок
+app.use(errorLogger);
+app.use(errors());
+app.use(error);
 
 app.listen(PORT, () => {
   console.log(`App listening on porl ${PORT}`);
