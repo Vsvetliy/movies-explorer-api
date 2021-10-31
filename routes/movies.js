@@ -28,7 +28,6 @@ moviesRout.post('/', celebrate({
     nameEN: Joi.string().required().min(2).max(30),
     thumbnail: Joi.string().required().min(2).max(30),
     movieId: Joi.string().required().min(2).max(30),
-    owner: Joi.string().required().min(2).max(30),
   }),
 }), moviesControl.moviesPost);
 
@@ -38,19 +37,5 @@ moviesRout.delete('/:movieId', celebrate({
   }),
 }),
 moviesControl.moviesDel);
-
-moviesRout.put('/likes/:cardId', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().length(24).hex(),
-  }),
-}),
-moviesControl.moviesAddLikes);
-
-moviesRout.delete('/likes/:cardId', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().length(24).hex(),
-  }),
-}),
-moviesControl.moviesDelLikes);
 
 module.exports = moviesRout;

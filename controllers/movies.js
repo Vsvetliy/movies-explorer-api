@@ -12,7 +12,7 @@ const cathIdError = function (res, card) {
 };
 
 exports.moviesGet = function (req, res, next) {
-  Movies.find({})
+  Movies.find({ owner: req.user._id })
     .then((movie) => res.send({ data: movie }))
     .catch(next);
 };
@@ -30,8 +30,7 @@ exports.moviesPost = function (req, res, next) {
     thumbnail,
     movieId,
   } = req.body;
-  // const owner = req.user._id;
-  const owner = '6171b4a7225ba4df21b08501';
+  const owner = req.user._id;
   Movies.create({
     country,
     director,
@@ -58,32 +57,9 @@ exports.moviesDel = function (req, res, next) {
         throw new NotFoundError('Данные не найдены');
       }
 
-      // if (req.user._id != movie.owner._id) {
-      //   throw new Forbidden('Доступ запрещён');
-      // }
       return Movies.findByIdAndRemove(req.params.movieId);
     })
 
     .then((movie) => cathIdError(res, movie))
-    .catch(next);
-};
-
-exports.moviesAddLikes = function (req, res, next) {
-  Movies.findByIdAndUpdate(
-
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
-  )
-
-    .then((card) => cathIdError(res, card))
-    .catch(next);
-};
-
-exports.moviesDelLikes = function (req, res, next) {
-  Movies.findByIdAndUpdate(req.params.cardId,
-    { $pull: { likes: req.user._id } },
-    { new: true })
-    .then((card) => cathIdError(res, card))
     .catch(next);
 };

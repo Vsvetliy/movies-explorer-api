@@ -104,17 +104,7 @@ exports.usersPost = function (req, res, next) {
 exports.usersPatch = function (req, res, next) {
   User.findByIdAndUpdate(
     req.user._id,
-    { name: req.body.name, about: req.body.about },
-    { new: true, runValidators: true },
-  )
-    .then((user) => cathIdError(res, user))
-    .catch(next);
-};
-
-exports.usersPatchAva = function (req, res, next) {
-  User.findByIdAndUpdate(
-    req.user._id,
-    { avatar: req.body.avatar },
+    { name: req.body.name, email: req.body.email },
     { new: true, runValidators: true },
   )
     .then((user) => cathIdError(res, user))

@@ -4,65 +4,65 @@ const validator = require('../node_modules/validator');
 const movieSchema = new mongoose.Schema({
   country: {
     type: String,
-   // required: true,
+    required: true,
 
   },
   director: {
     type: String,
-    //required: true,
+    required: true,
 
   },
   duration: {
     type: Number,
-    //required: true,
+    required: true,
 
   },
   year: {
     type: String,
-  //  required: true,
+    required: true,
 
   },
   description: {
     type: String,
-   // required: true,
+    required: true,
 
   },
   image: {
     type: String,
-//required: true,
+    required: true,
 
   },
   trailer: {
     type: String,
-  //  required: true,
+    required: true,
 
   },
   // миниатюрное изображение постера к фильму
   thumbnail: {
     type: String,
-    //required: true,
+    required: true,
 
   },
   // id пользователя, который сохранил фильм
   owner: {
-    type: String,
-    //type: mongoose.Schema.Types.ObjectId,
-   // required: true,
+
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
   },
   // id фильма, который содержится в ответе сервиса MoviesExplorer
   movieId: {
+
     type: String,
-    //type: mongoose.Schema.Types.ObjectId,
-   // required: true,
+    required: true,
   },
   nameRU: {
     type: String,
-   // required: true,
+    required: true,
 
   },
   nameEN: {
     type: String,
-    //required: true,
+    required: true,
 
   },
 

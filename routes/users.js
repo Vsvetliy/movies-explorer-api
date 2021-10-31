@@ -27,16 +27,9 @@ usersRout.get('/:id', celebrate({
 usersRout.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
+    email: Joi.string().required().min(2).max(30),
 
   }),
 }), usersControl.usersPatch);
-
-usersRout.patch('/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().required().custom(validateURL),
-  }),
-}),
-usersControl.usersPatchAva);
 
 module.exports = usersRout;
