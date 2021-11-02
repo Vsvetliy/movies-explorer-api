@@ -1,4 +1,4 @@
-const dotenv = require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
@@ -22,7 +22,7 @@ const allowedCors = [
 ];
 
 const { PORT = 3000 } = process.env;
-console.log (process.env);
+
 mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost:27017/bitfilmsdb', {
   useNewUrlParser: true,
   // useCreateIndex: true,

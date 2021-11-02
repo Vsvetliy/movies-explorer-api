@@ -51,7 +51,7 @@ exports.usersLogin = function (req, res, next) {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new LoginPasswordError('Неправильные почта или пароль1');
+        throw new LoginPasswordError('Неправильные почта или пароль');
       }
 
       findedUser = user;
@@ -59,9 +59,10 @@ exports.usersLogin = function (req, res, next) {
     })
     .then((matched) => {
       if (!matched) {
-        throw new LoginPasswordError('Неправильные почта или пароль2');
+        throw new LoginPasswordError('Неправильные почта или пароль');
       }
-
+      console.log("JWT_SECRET")
+console.log(JWT_SECRET)
       // создадим токен
       const token = jwt.sign({ _id: findedUser._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'secret-key', { expiresIn: '7d' });
