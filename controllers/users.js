@@ -102,11 +102,27 @@ exports.usersPost = function (req, res, next) {
 };
 
 exports.usersPatch = function (req, res, next) {
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name: req.body.name, email: req.body.email },
-    { new: true, runValidators: true },
-  )
+  if (!req.body.email) {
+    throw new ValidationError('Не заполнен email');
+  }
+
+  User.findOne({ email: req.body.email })
+  .then((oldUser) => {
+    if (oldUser) {
+      throw new ConflictErr('Пользователь с таким email уже существует');
+    }
+
+  })
+  .then(() => {
+    User.findByIdAndUpdate(
+      req.user._id,
+      { name: req.body.name, email: req.body.email },
+      { new: true, runValidators: true }
+    )
     .then((user) => cathIdError(res, user))
+  })
+
+
+
     .catch(next);
 };

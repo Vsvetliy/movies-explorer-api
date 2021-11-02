@@ -51,13 +51,16 @@ exports.moviesPost = function (req, res, next) {
 
 // удаление карточки
 exports.moviesDel = function (req, res, next) {
-  Movies.findById(req.params.movieId)
+  Movies.findById(req.params._id)
     .then((movie) => {
       if (!movie) {
         throw new NotFoundError('Данные не найдены');
       }
+      if (req.user._id != movie.owner._id) {
+        throw new Forbidden('Доступ запрещён');
+      }
 
-      return Movies.findByIdAndRemove(req.params.movieId);
+      return Movies.findByIdAndRemove(req.params._id);
     })
 
     .then((movie) => cathIdError(res, movie))

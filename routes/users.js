@@ -12,19 +12,19 @@ const validateURL = (value) => {
   return value;
 };
 
-usersRout.get('/', usersControl.usersGet);
+usersRout.get('/users/', usersControl.usersGet);
 
 // возвращает информацию о пользователе (email и имя)
-usersRout.get('/me', usersControl.usersGetMe);
+usersRout.get('/users/me', usersControl.usersGetMe);
 
-usersRout.get('/:id', celebrate({
+usersRout.get('/users/:id', celebrate({
   params: Joi.object().keys({
     id: Joi.string().length(24).hex(),
   }),
 }), usersControl.usersGetId);
 
 // обновляет информацию о пользователе (email и имя)
-usersRout.patch('/me', celebrate({
+usersRout.patch('/users/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().min(2).max(30),

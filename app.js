@@ -5,6 +5,7 @@ const { celebrate, Joi, errors } = require('celebrate');
 const cors = require('cors');
 const validator = require('./node_modules/validator');
 const usersRout = require('./routes/users');
+const signRout = require('./routes/sign')
 const usersControl = require('./controllers/users');
 const moviesRout = require('./routes/movies');
 const auth = require('./middlewares/auth');
@@ -12,12 +13,7 @@ const error = require('./middlewares/error');
 const NotFoundError = require('./errors/not-found-err');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const validateURL = (value) => {
-  if (!validator.isURL(value, { require_protocol: true })) {
-    throw new Error('Неправильный формат ссылки');
-  }
-  return value;
-};
+
 
 const allowedCors = [
   'https://mesto.kolomeytsev.nomoredomains.club',
@@ -26,7 +22,8 @@ const allowedCors = [
 ];
 
 const { PORT = 3000 } = process.env;
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+console.log (process.env);
+mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost:27017/bitfilmsdb', {
   useNewUrlParser: true,
   // useCreateIndex: true,
   // useFindAndModify: false,
@@ -63,28 +60,10 @@ app.use((req, res, next) => {
 
   next();
 });
-
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().min(2).max(30),
-    password: Joi.string().required().min(2),
-  }),
-}), usersControl.usersLogin);
-
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().custom(validateURL),
-    email: Joi.string().required().min(2).max(30),
-    password: Joi.string().required().min(2),
-  }),
-}), usersControl.usersPost);
-
+app.use(signRout);
 app.use(auth);
-app.use('/users', usersRout);
-
-app.use('/movies', moviesRout);
+app.use(usersRout);
+app.use(moviesRout);
 
 app.use('/*', (req, res) => {
   throw new NotFoundError('Cтраница не найдена');
