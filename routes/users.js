@@ -1,16 +1,8 @@
 const express = require('express');
 const { celebrate, Joi } = require('celebrate');
-const validator = require('../node_modules/validator');
 
 const usersRout = express.Router();
 const usersControl = require('../controllers/users');
-
-const validateURL = (value) => {
-  if (!validator.isURL(value, { require_protocol: true })) {
-    throw new Error('Неправильный формат ссылки');
-  }
-  return value;
-};
 
 usersRout.get('/users/', usersControl.usersGet);
 

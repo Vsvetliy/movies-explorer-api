@@ -9,43 +9,41 @@ const ValidationError = require('../errors/validation-error');
 const LoginPasswordError = require('../errors/login-password-error');
 const ConflictErr = require('../errors/conflictErr');
 
-const formattedUser = function (user) {
-  return {
-    name: user.name,
-    about: user.about,
-    id: user.id,
-    avatar: user.avatar,
-    email: user.email,
-  };
-};
+const formattedUser = (user) => ({
+  name: user.name,
+  about: user.about,
+  id: user.id,
+  avatar: user.avatar,
+  email: user.email,
+});
 
-const cathIdError = function (res, user) {
+const cathIdError = (res, user) => {
   if (!user) {
     throw new NotFoundError('Данные не найдены');
   }
   return res.send({ data: formattedUser(user) });
 };
 
-exports.usersGet = function (req, res, next) {
+exports.usersGet = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users.map(formattedUser) }))
     .catch(next);
 };
 
-exports.usersGetId = function (req, res, next) {
+exports.usersGetId = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => cathIdError(res, user))
     .catch(next);
 };
 
-exports.usersGetMe = function (req, res, next) {
+exports.usersGetMe = (req, res, next) => {
   User.findById(req.user._id)
 
     .then((user) => cathIdError(res, user))
     .catch(next);
 };
 
-exports.usersLogin = function (req, res, next) {
+exports.usersLogin = (req, res, next) => {
   const { email, password } = req.body;
   let findedUser;
   User.findOne({ email }).select('+password')
@@ -61,8 +59,7 @@ exports.usersLogin = function (req, res, next) {
       if (!matched) {
         throw new LoginPasswordError('Неправильные почта или пароль');
       }
-      console.log("JWT_SECRET")
-console.log(JWT_SECRET)
+
       // создадим токен
       const token = jwt.sign({ _id: findedUser._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'secret-key', { expiresIn: '7d' });
@@ -73,7 +70,7 @@ console.log(JWT_SECRET)
     .catch(next);
 };
 
-exports.usersPost = function (req, res, next) {
+exports.usersPost = (req, res, next) => {
   const {
     name, about, avatar, email,
   } = req.body;
@@ -102,28 +99,25 @@ exports.usersPost = function (req, res, next) {
     .catch(next);
 };
 
-exports.usersPatch = function (req, res, next) {
+exports.usersPatch = (req, res, next) => {
   if (!req.body.email) {
     throw new ValidationError('Не заполнен email');
   }
 
   User.findOne({ email: req.body.email })
-  .then((oldUser) => {
-    if (oldUser) {
-      throw new ConflictErr('Пользователь с таким email уже существует');
-    }
-
-  })
-  .then(() => {
-    User.findByIdAndUpdate(
-      req.user._id,
-      { name: req.body.name, email: req.body.email },
-      { new: true, runValidators: true }
-    )
-    .then((user) => cathIdError(res, user))
-  })
-
-
+    .then((oldUser) => {
+      if (oldUser) {
+        throw new ConflictErr('Пользователь с таким email уже существует');
+      }
+    })
+    .then(() => {
+      User.findByIdAndUpdate(
+        req.user._id,
+        { name: req.body.name, email: req.body.email },
+        { new: true, runValidators: true },
+      )
+        .then((user) => cathIdError(res, user));
+    })
 
     .catch(next);
 };

@@ -4,19 +4,19 @@ const NotFoundError = require('../errors/not-found-err');
 
 const Forbidden = require('../errors/forbidden');
 
-const cathIdError = function (res, card) {
+const cathIdError = (res, card) => {
   if (!card) {
     throw new NotFoundError('Данные не найдены');
   }
   return res.send({ data: card });
 };
 
-exports.moviesGet = function (req, res, next) {
+exports.moviesGet = (req, res, next) => {
   Movies.find({ owner: req.user._id })
     .then((movie) => res.send({ data: movie }))
     .catch(next);
 };
-exports.moviesPost = function (req, res, next) {
+exports.moviesPost = (req, res, next) => {
   const {
     country,
     director,
@@ -50,13 +50,13 @@ exports.moviesPost = function (req, res, next) {
 };
 
 // удаление карточки
-exports.moviesDel = function (req, res, next) {
+exports.moviesDel = (req, res, next) => {
   Movies.findById(req.params._id)
     .then((movie) => {
       if (!movie) {
         throw new NotFoundError('Данные не найдены');
       }
-      if (req.user._id != movie.owner._id) {
+      if (req.user._id !== movie.owner._id.toString()) {
         throw new Forbidden('Доступ запрещён');
       }
 

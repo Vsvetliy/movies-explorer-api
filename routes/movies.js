@@ -19,24 +19,23 @@ moviesRout.post('/movies/', celebrate({
   body: Joi.object().keys({
     country: Joi.string().required().min(2).max(30),
     director: Joi.string().required().min(2).max(30),
-    duration: Joi.number().required().min(2).max(30),
+    duration: Joi.number().required(),
     year: Joi.string().required().min(2).max(30),
-    description: Joi.string().required().min(2).max(30),
-    image: Joi.string().required().custom(validateURL).min(2).max(30),
-    trailer: Joi.string().required().custom(validateURL).min(2).max(30),
+    description: Joi.string().required().min(2).max(300),
+    image: Joi.string().required().custom(validateURL),
+    trailer: Joi.string().required().custom(validateURL),
     nameRU: Joi.string().required().min(2).max(30),
     nameEN: Joi.string().required().min(2).max(30),
-    thumbnail: Joi.string().required().custom(validateURL).min(2).max(30),
-    movieId: Joi.number().required().min(2).max(30),
+    thumbnail: Joi.string().required().custom(validateURL),
+    movieId: Joi.number().required(),
   }),
 }), moviesControl.moviesPost);
 
 moviesRout.delete('/movies/:_id', celebrate({
   params: Joi.object().keys({
-    _id:  Joi.string(),
+    _id: Joi.string(),
   }),
 }),
 moviesControl.moviesDel);
 
 module.exports = moviesRout;
-

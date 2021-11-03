@@ -1,4 +1,4 @@
-module.exports = (err, req, res, next) => {
+module.exports = (err, res) => {
   if (!err.statusCode || err.statusCode === 500) {
     res.status(500).send({ message: 'Ошибка сервера' });
   } else {

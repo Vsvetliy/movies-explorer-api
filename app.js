@@ -1,19 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const { celebrate, Joi, errors } = require('celebrate');
+const { errors } = require('celebrate');
 const cors = require('cors');
-const validator = require('./node_modules/validator');
 const usersRout = require('./routes/users');
-const signRout = require('./routes/sign')
-const usersControl = require('./controllers/users');
+const signRout = require('./routes/sign');
 const moviesRout = require('./routes/movies');
 const auth = require('./middlewares/auth');
 const error = require('./middlewares/error');
 const NotFoundError = require('./errors/not-found-err');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-
-
 
 const allowedCors = [
   'https://mesto.kolomeytsev.nomoredomains.club',
@@ -58,14 +54,14 @@ app.use((req, res, next) => {
     return res.end();
   }
 
-  next();
+  return next();
 });
 app.use(signRout);
 app.use(auth);
 app.use(usersRout);
 app.use(moviesRout);
 
-app.use('/*', (req, res) => {
+app.use('/*', () => {
   throw new NotFoundError('Cтраница не найдена');
 });
 //  логгер ошибок
@@ -74,5 +70,6 @@ app.use(errors());
 app.use(error);
 
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`App listening on porl ${PORT}`);
 });
