@@ -106,7 +106,7 @@ exports.usersPatch = (req, res, next) => {
 
   User.findOne({ email: req.body.email })
     .then((oldUser) => {
-      if (oldUser && oldUser._id !== req.user._id) {
+      if (oldUser && oldUser._id.toString() !== req.user._id) {
         throw new ConflictErr('Пользователь с таким email уже существует');
       }
     })
